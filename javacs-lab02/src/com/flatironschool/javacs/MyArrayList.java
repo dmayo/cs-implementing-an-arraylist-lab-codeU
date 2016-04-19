@@ -52,8 +52,7 @@ public class MyArrayList<E> implements List<E> {
 			System.arraycopy(array, 0, bigger, 0, array.length);
 			array = bigger;
 		} 
-		array[size] = element;
-		size++;
+		array[size++] = element;
 		return true;
 	}
 
@@ -62,7 +61,14 @@ public class MyArrayList<E> implements List<E> {
 		if (index < 0 || index > size) {
 			throw new IndexOutOfBoundsException();
 		}
-		// TODO: fill in the rest of this method
+		if (size >= array.length) {
+			// make a bigger array and copy over the elements
+			E[] bigger = (E[]) new Object[array.length * 2];
+			System.arraycopy(array, 0, bigger, 0, array.length);
+			array = bigger;
+		} 
+		array[index] = element;
+		size++;
 	}
 
 	@Override
@@ -111,8 +117,12 @@ public class MyArrayList<E> implements List<E> {
 
 	@Override
 	public int indexOf(Object target) {
-		// TODO: fill in this method
-		return 0;
+		for (int i=0;i<size;i++){
+			if(equals(target, array[i])){
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	/** Checks whether an element of the array is the target.
@@ -170,6 +180,7 @@ public class MyArrayList<E> implements List<E> {
 		return Arrays.asList(copy).listIterator(index);
 	}
 
+
 	@Override
 	public boolean remove(Object obj) {
 		int index = indexOf(obj);
@@ -180,10 +191,22 @@ public class MyArrayList<E> implements List<E> {
 		return true;
 	}
 
+	/*
+	* Removes the element at the specified position in this list (optional operation). 
+	* Shifts any subsequent elements to the left (subtracts one from their indices).
+	* Returns the element that was removed from the list.
+	*/
 	@Override
 	public E remove(int index) {
-		// TODO: fill in this method.
-		return null;
+		if (index < 0 || index >= size) {
+			throw new IndexOutOfBoundsException();
+		}
+		E out = array[index];
+		size--;
+		if(index!=size)
+			System.arraycopy(array, index+1, array, index, size-index);
+		array[size]=null;
+		return out;
 	}
 
 	@Override
@@ -202,8 +225,13 @@ public class MyArrayList<E> implements List<E> {
 
 	@Override
 	public E set(int index, E element) {
-		// TODO: fill in this method.
-		return null;
+		if (index < 0 || index >= size) {
+			throw new IndexOutOfBoundsException();
+		}
+		E prevElement = array[index];
+		array[index] = element;
+
+		return prevElement;
 	}
 
 	@Override
